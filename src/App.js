@@ -5,7 +5,7 @@ function Square() {
   const [value, setValue] = useState(null); //現在のstate(value)とそれを更新する関数(setValue)が返されるようにし、useStateを呼び出す。useStateに渡されるnullはこのstate変数の初期値を表す。
 
   function handleClick() {
-    console.log("clicked!"); //マス目をクリックすると、開発者ツールのログにclicked!と表示される
+    setValue("X"); //SquareをクリックするとXを表示する
   }
 
   return (
@@ -21,9 +21,10 @@ export default function Board() {
     //()内の記述を関数の呼び出しもとに戻す
     <>
       <div className="board-row">
-        <Square />{" "}
+        <Square />
         {/*Squareコンポーネントがpropsを受け取らなくなったため、Boardコンポーネントが作成した9個のSquareコンポーネントからvalueプロパティを削除する*/}
         <Square />
+        {/*各Squareはそれぞれ独自のstateを保持しており、それぞれのvalueはほかのものから完全に独立しているため、コンポーネントのset関数を呼び出すとReactは自動的に内部の子コンポーネントも更新する*/}
         <Square />
       </div>
       <div className="board-row">
