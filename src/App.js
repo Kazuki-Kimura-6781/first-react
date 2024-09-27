@@ -1,32 +1,47 @@
-//左上隅のマスをクリックすると仮定
 import { useState } from "react";
 
 function Square({ value, onSquareClick }) {
-  //5. インデックス0であるSquareコンポーネントのvalueプロパティがnullからXに変更される
   return (
     <button className="square" onClick={onSquareClick}>
-      {/*1. クリックするとbuttonがprops(onSquareClick)として受け取ったonClick関数が実行される。*/}
       {value}
     </button>
   );
 }
 
 export default function Board() {
-  //4. Boardのstateであるsquaresが更新されたことで、Boardとその子コンポーネントが再レンダー(更新が行われたコンポーネントを検知しDOMを更新すること)される。
-
-  const [squares, setSquares] = useState(Array(9).fill(null)); //3. 引数0のhandleClick関数を使い、squares配列の最初の要素をnullからXに更新する。
+  const [xIsNext, setXIsNext] = useState(true); //先手がデフォルトでXとなるように、手番追跡用のstateを追加
+  const [squares, setSquares] = useState(Array(9).fill(null));
 
   function handleClick(i) {
+    if (squares[i] || calculateWinner(squares)) {
+      return; //早期リターンによって、一度入力されたXとOが上書きされないようにする。
+    }
     const nextSquares = squares.slice();
-    nextSquares[i] = "X";
+    if (xIsNext) {
+      //条件分岐：もしつぎの手番がXなら、
+      nextSquares[i] = "X"; //配列nextSquareにXを入れる。
+    } else {
+      //つぎの手番がOなら、
+      nextSquares[i] = "O"; //配列nextSquareにOを入れる。
+    }
     setSquares(nextSquares);
+    setXIsNext(!xIsNext);
+  }
+
+  const winner = calculateWinner(squares);
+  let status;
+  if (winner) {
+    status = "Winner: " + winner;
+  } else {
+    status = "Next player: " + (xIsNext ? "X" : "O"); //"Winner:X"または"Winner:Ｏ"と表示させる
   }
 
   return (
     <>
+      <div className="status">{status}</div>{" "}
+      {/*Boardコンポーネントにstatus欄を追加し、ゲーム終了時に勝者を表示させ、ゲーム続行ならつぎの手番のプレイヤーを表示させる*/}
       <div className="board-row">
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        {/*2. onClick関数が実行されることで、引数0のhandleClick関数を呼び出す。*/}
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
         <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
       </div>
@@ -42,4 +57,26 @@ export default function Board() {
       </div>
     </>
   );
+}
+
+function calculateWinner(squares) {
+  //calculateWinner関数をBoardの前後どちらで定義しても問題ない。
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6], //配列linesにこのゲームの勝ちパターンを格納していく。
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+
+  return null;
 }
