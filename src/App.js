@@ -1,36 +1,32 @@
-import { useState } from "react"; //ReactのuserState関数をインポート
+//左上隅のマスをクリックすると仮定
+import { useState } from "react";
 
 function Square({ value, onSquareClick }) {
-  //onSquareClick関数をSquareコンポーネントのpropsに追加する
+  //5. インデックス0であるSquareコンポーネントのvalueプロパティがnullからXに変更される
   return (
     <button className="square" onClick={onSquareClick}>
-      {/*BoardコンポーネントからSquareコンポーネントに関数onSquareClickを渡し、マス目がクリックされたときにSquareにonSquareClickを呼び出してもらう*/}
+      {/*1. クリックするとbuttonがprops(onSquareClick)として受け取ったonClick関数が実行される。*/}
       {value}
     </button>
   );
 }
 
 export default function Board() {
-  //関数を定義し、exportにより外部からこのファイルにアクセスできるようになる、defaultにより、他のファイルはこの関数がメイン関数であると理解できる
-  const [squares, setSquares] = useState(Array(9).fill(null));
-  //squaresというstate変数を定義し、デフォルト値として九つのマスに対応する九個のnullを持つ配列を与える。
+  //4. Boardのstateであるsquaresが更新されたことで、Boardとその子コンポーネントが再レンダー(更新が行われたコンポーネントを検知しDOMを更新すること)される。
+
+  const [squares, setSquares] = useState(Array(9).fill(null)); //3. 引数0のhandleClick関数を使い、squares配列の最初の要素をnullからXに更新する。
 
   function handleClick(i) {
-    //handleClick関数に更新するマス目のインデックスを指定する引数iを追加
-    const nextSquares = squares.slice(); //slice()配列メソッドにより、配列squaresのコピーであるnextSquaresを作成する
-    nextSquares[i] = "X"; //nextSquares配列にiを追加することで、任意のマスにXを付けられるようになった
-    setSquares(nextSquares); //setSquares関数によってReactはstateに変更があったことを知り、squaresというstate変数を使用しているコンポーネント及びその子コンポーネントの再レンダーが行われる
-    //この状態だと左上の1マスにしかXを置けない
+    const nextSquares = squares.slice();
+    nextSquares[i] = "X";
+    setSquares(nextSquares);
   }
 
   return (
-    //()内の記述を関数の呼び出しもとに戻す
     <>
       <div className="board-row">
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        {/*<Square value={squares[0]} onSquareClick={handleClick(0)} />とすると、handleClick(0)がsetSquaresを呼び出し
-        Boardコンポーネントのstateを更新し、Boardコンポーネント全体が再レンダーされるが、これによりhandleClick(0)が再び実行され、無限ループが発生してしまうためうまくいかなくなる.
-        よってアロー関数を使い、マス目がクリックされると"=>"の後のコードが実行され、いちいち新しい関数を作って呼び出すような長いコードを書く必要がなくなる*/}
+        {/*2. onClick関数が実行されることで、引数0のhandleClick関数を呼び出す。*/}
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
         <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
       </div>
