@@ -1,6 +1,11 @@
-function Square({ value }) {
+import { useState } from "react"; //ReactのuserState関数をインポート
+
+function Square() {
+  //Squareコンポーネントのvalueプロパティを削除
+  const [value, setValue] = useState(null); //現在のstate(value)とそれを更新する関数(setValue)が返されるようにし、useStateを呼び出す。useStateに渡されるnullはこのstate変数の初期値を表す。
+
   function handleClick() {
-    console.log("clicked!");
+    console.log("clicked!"); //マス目をクリックすると、開発者ツールのログにclicked!と表示される
   }
 
   return (
@@ -15,21 +20,21 @@ export default function Board() {
   return (
     //()内の記述を関数の呼び出しもとに戻す
     <>
-      {/*JSX(jsファイルをhtmlのように書ける記法)はこの<> </>のような"フラグメント"と呼ばれるタグで囲まれる必要がある*/}
       <div className="board-row">
-        <Square value="1" />
-        <Square value="2" />
-        <Square value="3" />
+        <Square />{" "}
+        {/*Squareコンポーネントがpropsを受け取らなくなったため、Boardコンポーネントが作成した9個のSquareコンポーネントからvalueプロパティを削除する*/}
+        <Square />
+        <Square />
       </div>
       <div className="board-row">
-        <Square value="4" />
-        <Square value="5" />
-        <Square value="6" />
+        <Square />
+        <Square />
+        <Square />
       </div>
       <div className="board-row">
-        <Square value="7" />
-        <Square value="8" />
-        <Square value="9" />
+        <Square />
+        <Square />
+        <Square />
       </div>
     </>
   );
