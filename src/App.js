@@ -2,7 +2,7 @@ import { useState } from "react"; //ReactのuserState関数をインポート
 
 function Square({ value }) {
   return <button className="square">{value}</button>;
-  //Squareコンポーネントがvalue wo  stateで管理していた部分、及びonClickプロパティを削除
+  //Squareコンポーネントがvalueをstateで管理していた部分、及びonClickプロパティを削除
 }
 
 export default function Board() {
@@ -14,7 +14,7 @@ export default function Board() {
     <>
       <div className="board-row">
         <Square value={squares[0]} />
-        {/*レンダーする各Squareにpropsとしてvalueを渡していく*/}
+        {/*レンダーする各Squareにpropsとしてvalueを渡していく。これからstateを更新する方法を用意していく*/}
         <Square value={squares[1]} />
         <Square value={squares[2]} />
       </div>
