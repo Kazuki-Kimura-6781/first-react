@@ -66,6 +66,23 @@ export default function Game() {
     setXIsNext(!xIsNext); //xIsNextを切り替えられるようにする。
   }
 
+  function jumpTo(nextMove) {}
+
+  const moves = history.map((squares, move) => {
+    //mapに渡される関数の内部で、historyを反復処理する部分では、squares引数がhistoryの各要素を順に受け取り、move引数が配列のインデックス(0, 1, 2...)を順に受け取る
+    let description;
+    if (move > 0) {
+      description = "Go to move #" + move; //move引数が0より大きい場合、"Go to move #" + moveというボタンを表示する。
+    } else {
+      description = "Go to game start"; //move引数が0の場合、"Go to game start"というボタンを表示する。
+    }
+    return (
+      <li>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  });
+
   return (
     <div className="game">
       <div className="game-board">
@@ -73,7 +90,8 @@ export default function Game() {
         {/*xIsNext、currentSquares、handlePlayをそれぞれBoardコンポーネントにpropsとして渡す*/}
       </div>
       <div className="game-info">
-        <ol>{/*TODO*/}</ol>
+        <ol>{moves}</ol>{" "}
+        {/*"Go to move #" + move または "Go to game start"というボタンを表示させる*/}
       </div>
     </div>
   );
