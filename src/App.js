@@ -8,24 +8,20 @@ function Square({ value, onSquareClick }) {
   );
 }
 
-export default function Board() {
-  const [xIsNext, setXIsNext] = useState(true); //先手がデフォルトでXとなるように、手番追跡用のstateを追加
-  const [squares, setSquares] = useState(Array(9).fill(null));
+function Board({ xIsNext, squares, onPlay }) {
+  //Boardコンポーネントが渡されるpropsによって完全に制御されるようにする。
 
   function handleClick(i) {
     if (squares[i] || calculateWinner(squares)) {
-      return; //早期リターンによって、一度入力されたXとOが上書きされないようにする。
+      return;
     }
     const nextSquares = squares.slice();
     if (xIsNext) {
-      //条件分岐：もしつぎの手番がXなら、
-      nextSquares[i] = "X"; //配列nextSquareにXを入れる。
+      nextSquares[i] = "X";
     } else {
-      //つぎの手番がOなら、
-      nextSquares[i] = "O"; //配列nextSquareにOを入れる。
+      nextSquares[i] = "O";
     }
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
+    onPlay(nextSquares); //setSquaresとsetXIsNextを呼び出しているところを、onPlay関数への単一の呼び出しに置き換え、ユーザがマス目をクリックすることでGameコンポーネントがBoardを更新できるようにする。
   }
 
   const winner = calculateWinner(squares);
@@ -39,7 +35,6 @@ export default function Board() {
   return (
     <>
       <div className="status">{status}</div>{" "}
-      {/*Boardコンポーネントにstatus欄を追加し、ゲーム終了時に勝者を表示させ、ゲーム続行ならつぎの手番のプレイヤーを表示させる*/}
       <div className="board-row">
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
@@ -59,8 +54,32 @@ export default function Board() {
   );
 }
 
+export default function Game() {
+  //Gameコンポーネントを追加＆このコンポーネントをトップコンポーネントにする
+  const [xIsNext, setXIsNext] = useState(true);
+  const [history, setHistory] = useState([Array(9).fill(null)]); //この2つの記述をBoardコンポーネントからこちらに持ってくる
+  const currentSquares = history[history.length - 1]; //現在の盤面をレンダーするために、historyの最後にあるマス目の配列を読み取る必要がある
+
+  function handlePlay(nextSquares) {
+    //BoardコンポーネントからhandlePlay関数が呼ばれたとき、この関数の中身を渡す
+    setHistory([...history, nextSquares]); //historyの全ての要素の後にnextSquaresがつながった新しい配列を作成する。
+    setXIsNext(!xIsNext); //xIsNextを切り替えられるようにする。
+  }
+
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />{" "}
+        {/*xIsNext、currentSquares、handlePlayをそれぞれBoardコンポーネントにpropsとして渡す*/}
+      </div>
+      <div className="game-info">
+        <ol>{/*TODO*/}</ol>
+      </div>
+    </div>
+  );
+}
+
 function calculateWinner(squares) {
-  //calculateWinner関数をBoardの前後どちらで定義しても問題ない。
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -69,7 +88,7 @@ function calculateWinner(squares) {
     [1, 4, 7],
     [2, 5, 8],
     [0, 4, 8],
-    [2, 4, 6], //配列linesにこのゲームの勝ちパターンを格納していく。
+    [2, 4, 6],
   ];
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
