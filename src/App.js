@@ -56,9 +56,9 @@ function Board({ xIsNext, squares, onPlay }) {
 
 export default function Game() {
   //Gameコンポーネントを追加＆このコンポーネントをトップコンポーネントにする
-  const [xIsNext, setXIsNext] = useState(true);
   const [history, setHistory] = useState([Array(9).fill(null)]); //この2つの記述をBoardコンポーネントからこちらに持ってくる
   const [currentMove, setCurrentMove] = useState(0); //このstate変数によって現在ユーザは見ているのが何番目の着手であるかを管理させる。(デフォルト値は0)
+  const xIsNext = currentMove % 2 === 0; //currentMoveが偶数の時、xIsNextはtrueで、currentMoveが奇数の時、xIsNextはfalseであるため、xIsNextをstateに格納しないように修正
   const currentSquares = history[currentMove]; //現在の盤面をレンダーするために、historyの最後にあるマス目の配列を読み取る必要がある
 
   function handlePlay(nextSquares) {
@@ -66,12 +66,10 @@ export default function Game() {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
-    setXIsNext(!xIsNext); //xIsNextを切り替えられるようにする。
   }
 
   function jumpTo(nextMove) {
     setCurrentMove(nextMove); //currentMoveを更新する。
-    setXIsNext(nextMove % 2 === 0); //currentMoveを更新する数値が偶数の場合は、xIsNextをtrueに設定する。
   }
 
   const moves = history.map((squares, move) => {
