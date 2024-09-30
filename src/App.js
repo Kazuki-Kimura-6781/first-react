@@ -77,7 +77,8 @@ export default function Game() {
       description = "Go to game start"; //move引数が0の場合、"Go to game start"というボタンを表示する。
     }
     return (
-      <li>
+      <li key={move}>
+        {/*move引数をkeyに設定*/}
         <button onClick={() => jumpTo(move)}>{description}</button>
       </li>
     );
